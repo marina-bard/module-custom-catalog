@@ -1,0 +1,38 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <preference for="Magento\CustomCatalog\Api\ProductManagerInterface" type="Magento\CustomCatalog\Model\ProductManager"/>
+    <preference for="Magento\CustomCatalog\Api\Data\ProductDataInterface" type="Magento\CustomCatalog\Model\Data\ProductData"/>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <!--<item name="stacklevel_customcatalog_product_listing_data_source" xsi:type="string">Magento\Catalog\Model\ResourceModel\Product\Grid\Collection</item>-->
+                <item name="stacklevel_customcatalog_product_listing_data_source" xsi:type="string">Magento\CustomCatalog\Model\ResourceModel\Product\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="queue_handler" xsi:type="object">Magento\CustomCatalog\Console\ConsumerCommand</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\CustomCatalog\Model\Config\Data">
+        <arguments>
+            <argument name="reader" xsi:type="object">ConfigReader</argument>
+            <argument name="cacheId" xsi:type="string">stacklevel_customcatalog_config_cache</argument>
+        </arguments>
+    </type>
+    <virtualType name="ConfigReader" type="Magento\Framework\Config\Reader\Filesystem">
+        <arguments>
+            <argument name="converter" xsi:type="object">Magento\CustomCatalog\Model\Config\Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\CustomCatalog\Model\Config\SchemaLocator</argument>
+            <argument name="fileName" xsi:type="string">customcatalog_config.xml</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Magento\CustomCatalog\Model\ResourceModel\Product\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">stacklevel_customcatalog_product</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\CustomCatalog\Model\ResourceModel\Product</argument>
+        </arguments>
+    </virtualType>
+</config>
