@@ -42,13 +42,13 @@ class ConsumerCommand extends Command
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->deploymentConfig->get('queue/amqp');
+        $config = $this->deploymentConfig->get('rabbitmq');
 
         $connection = new AMQPStreamConnection(
-            $config['host'],
-            $config['port'],
-            $config['user'],
-            $config['password']
+            $config['amqp-host'],
+            $config['amqp-port'],
+            $config['amqp-user'],
+            $config['amqp-password']
         );
         $channel = $connection->channel();
         $channel->queue_declare('update', false, false, false, false);
