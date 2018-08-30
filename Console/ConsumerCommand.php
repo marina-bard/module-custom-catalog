@@ -8,9 +8,9 @@
 
 namespace Magento\CustomCatalog\Console;
 
+use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Exception\InputException;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use Magento\CustomCatalog\Model\Config\Data;
 use Magento\CustomCatalog\Model\Product;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,16 +20,16 @@ USE Magento\Framework\App\ObjectManager;
 class ConsumerCommand extends Command
 {
     /**
-     * @var Data $config
+     * @var DeploymentConfig $deploymentConfig
      */
-    protected $config;
+    protected $deploymentConfig;
 
     public function __construct(
-        Data $config,
+        DeploymentConfig $deploymentConfig,
         $name = null
     )
     {
-        $this->config = $config;
+        $this->deploymentConfig = $deploymentConfig;
         parent::__construct($name);
     }
 
@@ -42,8 +42,7 @@ class ConsumerCommand extends Command
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $customConfig = $this->config->get(Data::CUSTOM_CONFIG_TAG_NAME);
-        $config = $customConfig['rabbitmq'];
+        $config = $this->deploymentConfig->get('queue/amqp');
 
         $connection = new AMQPStreamConnection(
             $config['host'],

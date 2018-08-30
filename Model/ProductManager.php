@@ -8,6 +8,7 @@
 
 namespace Magento\CustomCatalog\Model;
 
+use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\DataObject;
 use Magento\CustomCatalog\Model\ResourceModel\Product\Collection;
 use Magento\Framework\ObjectManagerInterface;
@@ -15,7 +16,6 @@ use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Magento\CustomCatalog\Api\ProductManagerInterface;
-use Magento\CustomCatalog\Model\Config\Data;
 use Magento\CustomCatalog\Api\Data\ProductDataInterface;
 
 class ProductManager implements ProductManagerInterface
@@ -36,27 +36,27 @@ class ProductManager implements ProductManagerInterface
     protected $extensibleDataObjectConverter;
 
     /**
-     * @var Data $config
+     * @var DeploymentConfig $deploymentConfig
      */
-    protected $config;
+    protected $deploymentConfig;
 
     /**
      * ProductManager constructor.
      * @param Collection $collection
      * @param ObjectManagerInterface $objectManager
      * @param ExtensibleDataObjectConverter $extensibleDataObjectConverter
-     * @param Data $config
+     * @param DeploymentConfig $deploymentConfig
      */
     public function __construct(
         Collection $collection,
         ObjectManagerInterface$objectManager,
         ExtensibleDataObjectConverter $extensibleDataObjectConverter,
-        Data $config
+        DeploymentConfig $deploymentConfig
     ) {
         $this->collection = $collection;
         $this->objectManager = $objectManager;
         $this->extensibleDataObjectConverter = $extensibleDataObjectConverter;
-        $this->config = $config;
+        $this->deploymentConfig = $deploymentConfig;
     }
 
     /**
@@ -82,8 +82,7 @@ class ProductManager implements ProductManagerInterface
 
         $productData = serialize($productData);
 
-        $customConfig = $this->config->get(Data::CUSTOM_CONFIG_TAG_NAME);
-        $config = $customConfig['rabbitmq'];
+        $config = $this->deploymentConfig->get('queue/amqp');
 
         $connection = new AMQPStreamConnection(
             $config['host'],
