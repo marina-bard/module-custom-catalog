@@ -7,7 +7,7 @@
     "magento/framework": "101.0.*",
     "php-amqplib/php-amqplib": "^2.7"
   },
-  "version": "1.0.0",
+  "version": "1.2.0",
   "license": [
     "OSL-3.0",
     "AFL-3.0"
